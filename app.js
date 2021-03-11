@@ -1,7 +1,7 @@
 const express = require("express");
 const logger = require('./services/logger');
 const expressWebSocket = require("express-ws");
-const lives = require('./services/lives');
+const video = require('./services/video');
 
 const port = 3000
 
@@ -20,4 +20,5 @@ app.use(express.static("public"));
 app.listen(port);
 logger.info("Web server started! on port: ", port)
 
-app.ws('/lives/:organization_code/:place_code/:monitor_id', lives.handle);
+app.ws('/lives/:organization_code/:place_code/:monitor_id', video.liveHandler);
+app.ws('/replay/:organization_code/:place_code/:monitor_id', video.replayHandler)
