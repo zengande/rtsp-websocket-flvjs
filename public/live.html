@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .video {
+            width: 50%;
+            height: 50vh;
+            float: left;
+            border: 1px solid rgb(12, 12, 12);
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <video class="video" data-organization="5392" data-place="181" data-monitor="2456" autoplay></video>
+    <video class="video" data-organization="5392" data-place="181" data-monitor="2457" autoplay></video>
+    <video class="video" data-organization="5392" data-place="181" data-monitor="2458" autoplay></video>
+    <video class="video" data-organization="5392" data-place="181" data-monitor="2459" autoplay></video>
+    <script src="libs/flv.js"></script>
+
+    <script>
+        if (flvjs.isSupported()) {
+            var videos = document.getElementsByClassName('video');
+            for (var i = 0; i < videos.length; i++) {
+
+                var video = videos[i];
+                var organization = video.getAttribute("data-organization")
+                var place = video.getAttribute("data-place")
+                var monitor = video.getAttribute("data-monitor")
+                console.log(organization, place, monitor);
+                var flvPlayer = flvjs.createPlayer({
+                    type: 'flv',
+                    isLive: true,
+                    url: `ws://192.168.50.88:3000/lives/${organization}/${place}/${monitor}`
+                });
+                flvPlayer.attachMediaElement(video);
+                flvPlayer.load();
+                flvPlayer.play();
+
+            }
+        }
+    </script>
+</body>
+
+</html>
