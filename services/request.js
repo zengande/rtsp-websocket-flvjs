@@ -5,14 +5,14 @@ const logger = require('./logger')
 var request = {};
 
 request.get_rtsp_url = async (organization_code, place_code) => {
-    const response = await axios({
-        url: "http://10.9.1.205:16000/api/get_rtsp_api/",
-        method: "post",
-        data: {
-            organization_code,
-            place_code
-        }
-    });
+    // const response = await axios({
+    //     url: "http://10.9.1.205:16000/api/get_rtsp_api/",
+    //     method: "post",
+    //     data: {
+    //         organization_code,
+    //         place_code
+    //     }
+    // });
 
     // return response;
     return {
