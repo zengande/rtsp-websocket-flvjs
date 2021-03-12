@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .video {
+            width: 50%;
+            height: 50vh;
+            float: left;
+            border: 1px solid rgb(12, 12, 12);
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <video id="video" data-organization="5392" data-place="636" data-monitor="2569" autoplay="autoplay" muted></video>
+    <script src="libs/flv.js"></script>
+
+    <script>
+        if (flvjs.isSupported()) {
+            var video = document.getElementById(video);
+            var organization = video.getAttribute("data-organization")
+            var place = video.getAttribute("data-place")
+            var monitor = video.getAttribute("data-monitor")
+            console.log(organization, place, monitor);
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                isLive: true,
+                url: `ws://192.168.50.88:3000/replay/${organization}/${place}/${monitor}?start_time=2021-03-11 08:00:00&end_time=2021-03-12 08:00:00`
+            });
+            flvPlayer.attachMediaElement(video);
+            flvPlayer.load();
+            flvPlayer.play();
+
+        }
+    </script>
+</body>
+
+</html>

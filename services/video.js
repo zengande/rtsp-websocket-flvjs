@@ -73,19 +73,9 @@ function replayHandler(ws, req, next) {
     const { organization_code, place_code, monitor_id } = req.params;
     const { start_time, end_time } = req.query;
 
-    request.get_rtsp_replay_url(organization_code, place_code)
+    request.get_rtsp_replay_url(organization_code, place_code, monitor_id, start_time, end_time)
         .then(response => {
-            const { data, status } = response;
-            // logger.debug(data);
-            if (status === 200) {
-                var items = data.filter(i => i.monitor_id == monitor_id);
-                if (items.length > 0) {
-                    var item = items[0];
-                    var url = item.rtsp_url
-                    logger.info("url: " + url);
-                    start_ffmpeg(ws, url);
-                }
-            }
+            
         })
         .catch(err => {
             logger.error(err);
