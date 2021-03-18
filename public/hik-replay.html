@@ -23,20 +23,17 @@
 </head>
 
 <body>
-    <video id="video" data-organization="5392" data-place="636" data-monitor="2569" autoplay="autoplay" muted></video>
+    <video id="video" data-cameraId="21a76c0f7eec402799062b43ad3011ca" autoplay="autoplay" muted></video>
     <script src="libs/flv.js"></script>
 
     <script>
         if (flvjs.isSupported()) {
             var video = document.getElementById("video");
-            var organization = video.getAttribute("data-organization")
-            var place = video.getAttribute("data-place")
-            var monitor = video.getAttribute("data-monitor")
-            console.log(organization, place, monitor);
+            var cameraId = video.getAttribute("data-cameraId");
             var flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 isLive: true,
-                url: `ws://61.164.58.46:6002/ws/replay/${organization}/${place}/${monitor}?start_time=2021-03-11 08:00:00&end_time=2021-03-12 08:00:00`
+                url: `ws://61.164.58.46:6002/ws/hik/replay/${cameraId}?beginTime=2021-03-17 08:00:00&endTime=2021-03-17 12:00:00`
             });
             flvPlayer.attachMediaElement(video);
             flvPlayer.load();

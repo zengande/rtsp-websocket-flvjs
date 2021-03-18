@@ -8,14 +8,14 @@ const request = require('./request');
  * @param {*} ws 
  * @param {*} url 
  */
-function start_ffmpeg(ws, url) {
+function start_ffmpeg(ws, url, useH264 = false) {
     const stream = webSocketStream(ws, {
         binary: true,
         browserBufferTimeout: 1000000
     }, {
         browserBufferTimeout: 1000000
     });
-    ffmpeg(url)
+    var command = ffmpeg(url)
         .addInputOption("-rtsp_transport", "tcp", "-buffer_size", "102400")  // 这里可以添加一些 RTSP 优化的参数
         .on("start", function () {
             logger.debug(url, "Stream started.");
@@ -24,17 +24,29 @@ function start_ffmpeg(ws, url) {
             logger.debug(url, "Stream codecData.")
             // 摄像机在线处理
         })
-        .on("error", function (err) {
+        .on("error", function (err, stdout, stderr) {
             logger.error(url, "An error occured: ", err.message);
+            logger.error(url, "stdout: ", stdout);
+            logger.error(url, "stderr: ", stderr);
         })
         .on("end", function () {
             logger.debug(url, "Stream end!");
             // 摄像机断线的处理
-        })
-        // .outputOption('-c:v libx264')
-        .videoCodec('copy')
-        // .outputOption("-vsync 2")
-        .outputFormat("flv")
+        });
+
+    if (useH264) {
+        command.format('flv')
+            .flvmeta()
+            .size('720x?')
+            .videoBitrate('256k')
+            .videoCodec('libx264')
+            .fps(10);
+    } else {
+        command.videoCodec('copy')
+            .outputFormat("flv");
+    }
+
+    command
         .noAudio()
         .pipe(stream)
 }
@@ -56,7 +68,7 @@ function liveHandler(ws, req, next) {
             start_ffmpeg(ws, url)
         })
         .catch(err => {
-            logger.error(err);
+            logger.error("发生错误");
         });
 }
 
@@ -74,15 +86,44 @@ function replayHandler(ws, req, next) {
     const { start_time, end_time } = req.query;
 
     request.get_rtsp_replay_url(organization_code, place_code, monitor_id, start_time, end_time)
-        .then(response => {
-            
+        .then(url => {
+            start_ffmpeg(ws, url);
         })
         .catch(err => {
+            logger.error("发生错误");
+        });
+}
+
+function hikLiveHandler(ws, req, next) {
+    logger.debug("hik live request handle");
+    const { cameraId } = req.params;
+
+    request.get_hik_live_url(cameraId)
+        .then(url => {
+            start_ffmpeg(ws, url)
+        }).catch(err => {
+            logger.error("发生错误: ");
+            logger.error(err);
+        });
+}
+
+function hikReplayHandler(ws, req, next) {
+    logger.debug("hik replay request handle");
+    const { cameraId } = req.params;
+    const { beginTime, endTime } = req.query;
+
+    request.get_hik_replay_url(cameraId, beginTime, endTime)
+        .then(url => {
+            start_ffmpeg(ws, url)
+        }).catch(err => {
+            logger.error("发生错误: ");
             logger.error(err);
         });
 }
 
 module.exports = {
     liveHandler,
-    replayHandler
+    replayHandler,
+    hikLiveHandler,
+    hikReplayHandler
 };

@@ -23,10 +23,7 @@
 </head>
 
 <body>
-    <video class="video" data-organization="5070" data-place="235" data-monitor="2460" autoplay="autoplay" muted></video>
-    <video class="video" data-organization="5070" data-place="235" data-monitor="2461" autoplay="autoplay" muted></video>
-    <video class="video" data-organization="5392" data-place="636" data-monitor="2571" autoplay="autoplay" muted></video>
-    <video class="video" data-organization="5070" data-place="235" data-monitor="2462" autoplay="autoplay" muted></video>
+    <video class="video" data-cameraId="21a76c0f7eec402799062b43ad3011ca" autoplay="autoplay" muted></video>
     <script src="libs/flv.js"></script>
 
     <script>
@@ -35,14 +32,11 @@
             for (var i = 0; i < videos.length; i++) {
 
                 var video = videos[i];
-                var organization = video.getAttribute("data-organization")
-                var place = video.getAttribute("data-place")
-                var monitor = video.getAttribute("data-monitor")
-                console.log(organization, place, monitor);
+                var cameraId = video.getAttribute("data-cameraId");
                 var flvPlayer = flvjs.createPlayer({
                     type: 'flv',
                     isLive: true,
-                    url: `ws://61.164.58.46:6002/ws/lives/${organization}/${place}/${monitor}`
+                    url: `ws://61.164.58.46:6002/ws/hik/live/${cameraId}`
                 });
                 flvPlayer.attachMediaElement(video);
                 flvPlayer.load();

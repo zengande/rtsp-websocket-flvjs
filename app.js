@@ -3,7 +3,7 @@ const logger = require('./services/logger');
 const expressWebSocket = require("express-ws");
 const video = require('./services/video');
 
-const port = 3000
+const port = 8456
 
 let app = express();
 expressWebSocket(app, null, {
@@ -21,4 +21,7 @@ app.listen(port);
 logger.info("Web server started! on port: ", port)
 
 app.ws('/lives/:organization_code/:place_code/:monitor_id', video.liveHandler);
-app.ws('/replay/:organization_code/:place_code/:monitor_id', video.replayHandler)
+app.ws('/replay/:organization_code/:place_code/:monitor_id', video.replayHandler);
+
+app.ws('/hik/live/:cameraId', video.hikLiveHandler);
+app.ws('/hik/replay/:cameraId', video.hikReplayHandler);
